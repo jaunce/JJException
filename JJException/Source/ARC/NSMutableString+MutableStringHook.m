@@ -23,6 +23,7 @@ JJSYNTH_DUMMY_CLASS(NSMutableString_MutableStringHook)
     swizzleInstanceMethod(NSClassFromString(@"__NSCFString"), @selector(substringFromIndex:), @selector(hookSubstringFromIndex:));
     swizzleInstanceMethod(NSClassFromString(@"__NSCFString"), @selector(substringToIndex:), @selector(hookSubstringToIndex:));
     swizzleInstanceMethod(NSClassFromString(@"__NSCFString"), @selector(substringWithRange:), @selector(hookSubstringWithRange:));
+    swizzleInstanceMethod(NSClassFromString(@"__NSCFString"), @selector(characterAtIndex:), @selector(hookCharacterAtIndex:));
 }
 
 - (void) hookAppendString:(NSString *)aString{
@@ -62,6 +63,14 @@ JJSYNTH_DUMMY_CLASS(NSMutableString_MutableStringHook)
         return [self hookSubstringToIndex:to];
     }
     handleCrashException(JJExceptionGuardNSStringContainer,[NSString stringWithFormat:@"NSMutableString substringToIndex value:%@ to:%tu",self,to]);
+    return self;
+}
+
+- (NSString *)hookCharacterAtIndex:(NSUInteger)index{
+    if (index < self.length) {
+        return [self hookCharacterAtIndex:index];
+    }
+    handleCrashException(JJExceptionGuardNSStringContainer,[NSString stringWithFormat:@"NSMutableString characterAtIndex value:%@ index:%tu",self,index]);
     return self;
 }
 
